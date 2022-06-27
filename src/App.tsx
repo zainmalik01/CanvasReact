@@ -25,12 +25,17 @@ function App() {
   
   const createCanvas=()=> {
     let scaleRatio = Math.min(1000.0 / dimension.width, 1000.0 / dimension.width);
-
+    console.log('scale ratio',scaleRatio)
     canvas = new fabric.Canvas('canvas',
-    { width: 640, height: 360 }
+      {
+        width:dimension.width,
+        height: dimension.height,
+
+        // backgroundImage: previewUrl
+      }
       // {  }
     );
-    // canvas.setDimensions({ width: canvas.getWidth() * scaleRatio, height: canvas.getHeight() * scaleRatio });
+    canvas.setDimensions({ width: canvas.getWidth() * scaleRatio, height: canvas.getHeight() * scaleRatio });
 
     buildZone = document.getElementById('buildZone');
     wrapper = document.getElementById('wrapper');
@@ -38,16 +43,14 @@ function App() {
 
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
-    let temp = document.getElementById('clear');
-    if (temp != null) {
-      temp.addEventListener('click', () => {
-        !deleteActiveObjects() && canvas.clear();
-      });
-    }
-    document.addEventListener('keydown', (event) => {
-      console.log('a');
-      event.keyCode === 46 && deleteActiveObjects();
-    })
+    
+
+    // code for removing selected shape or  clearing the canvas
+    RemoveShapes();
+
+
+
+   
 
     colors.forEach((color: any, i: any) => {
       console.log('a');
@@ -92,48 +95,12 @@ function App() {
         }
       })
     });
-    let squaretemp: any = document.getElementById('square')
-    console.log(squaretemp);
-    if (squaretemp != null) {
-      squaretemp.addEventListener('click', () => {
-        console.log('a');
-        canvas.add(new fabric.Rect({
-          strokeWidth: strokeWidth,
-          stroke: strokeColor,
-          fill: 'transparent',
-          width: 50,
-          height: 50,
-          left: 100,
-          top: 100
-        }));
-      });
-    }
+
+    // code for drawing squre
+    drawSquare();
     // mew code for scale 
-    // let self=this
-    // fabric.Image.fromURL(previewUrl, function(img:any) {
-    //   img.set({
-    //     // left: 10,
-    //     // right:10,
-    //     scaleX: scaleRatio,
-    //     scaleY: scaleRatio,
-    //     // top: 10
-    //   });
-    //   img.resizeFilter = new fabric.Image.filters.Resize({
-    //     resizeType: 'lanczos'
-    //   });
-    //   img.applyResizeFilters();
-    //   // self.canvas.add(img);
-    //   self.canvas.setBackgroundImage(self.previewUrl, self.canvas.renderAll.bind(self.canvas), {
-    //     //   width: 500,
-    //     //   height: 500,
-    //     originX:'left',
-    //     originY:'top',
-    //     scaleX: scaleRatio,
-    //     scaleY: scaleRatio,
-    //     })
-    // }, {
-    //   crossOrigin: 'anonymous'
-    // });
+   scaleFilter(previewUrl,scaleRatio) 
+    
 
     
     // old code 
@@ -149,7 +116,7 @@ function App() {
 
 
   }
-
+  
   const RemoveShapes=()=>{
     let temp = document.getElementById('clear');
     if (temp != null) {
@@ -273,7 +240,7 @@ function App() {
     var reader = new FileReader();
 
     reader.readAsDataURL(fileData);
-    console.log(reader)
+    console.log('reader',reader)
     // let self = this
     reader.onload = (_event) => {
       previewUrl = reader.result;
@@ -302,8 +269,19 @@ function App() {
 			<i id="clear" className="feather icon-trash"></i>
 		</div>
 	</div>
-	<div id="styleZone"></div>
-  <button onClick={createCanvas}> apply</button>
+	{/* <div id="styleZone"></div> */}
+  <div>
+  <button>
+      <label  className="custom-file-upload1 bg-green  upload-btn">
+        <i className="icon-upload"></i> Upload
+      </label>
+      <input id="file-upload" type="file" name="image" 
+      onChange={(e)=>{fileProgress(e)}}/>
+    
+    </button>
+      
+      <button onClick={createCanvas}>Display</button>
+  </div>
   </div>
     </>
   );
